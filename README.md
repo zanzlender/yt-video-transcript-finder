@@ -1,12 +1,19 @@
 # Youtube video finder
 
+**NOTICE!** Because of an issue with [FlexSearch](https://github.com/nextapps-de/flexsearch) this implementation doesn't work yet, and development is posponed until it is fixed.
+
 Did you ever want to find the video you were watching where **you remember what they talked about** but don't know what it is? Well I have.
 
 Which is why YTF's idea is simple. Find videos on YT based on keywords of the content (transcript) of the video.
 
-**NOTICE** Because of an issue with [FlexSearch](https://github.com/nextapps-de/flexsearch) this implementation doesn't work yet. And development is posponed until it is fixed.
+## Search
 
-## T3 Stack
+Under the hood YTF uses [FlexSearch](https://github.com/nextapps-de/flexsearch) to read all of the text of the transcripts and returns the results by exact timestamp when the keyword(s) were mentioned in the video.
+
+
+<br />
+
+## Credits 
 
 This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
 
