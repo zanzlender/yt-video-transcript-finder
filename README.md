@@ -1,43 +1,37 @@
 # Youtube video finder
 
-**NOTICE!** Because of an issue with [FlexSearch](https://github.com/nextapps-de/flexsearch) this implementation doesn't work yet, and development is posponed until it is fixed.
+## How to run
 
-Did you ever want to find the video you were watching where **you remember what they talked about** but don't know what it is? Well I have.
+Execute the following commands:
 
-Which is why YTF's idea is simple. Find videos on YT based on keywords of the content (transcript) of the video.
+```bash
+docker pull getmeili/meilisearch:v1.4
+```
 
-## Search
+Followed by
 
-Under the hood YTF uses [FlexSearch](https://github.com/nextapps-de/flexsearch) to read all of the text of the transcripts and returns the results by exact timestamp when the keyword(s) were mentioned in the video.
+```bash
+docker run -p 7700:7700 --name meilisearch_container -v meili_data getmeili/meilisearch:v1.4
+```
 
+If you have already created a container with the previous command then run with:
 
-<br />
+```bash
+docker container start meilisearch_container
+```
 
-## Credits 
+then
 
-This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
+```bash
+curl \
+  -X POST 'http://localhost:7700/indexes/transcripts/documents?primaryKey=id' \
+  -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer aSampleMasterKey' \
+  --data-binary @transcripts.json
+```
 
-### What's next? How do I make an app with this?
+then
 
-We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.
+```bash
 
-If you are not familiar with the different technologies used in this project, please refer to the respective docs. If you still are in the wind, please join our [Discord](https://t3.gg/discord) and ask for help.
-
-- [Next.js](https://nextjs.org)
-- [NextAuth.js](https://next-auth.js.org)
-- [Prisma](https://prisma.io)
-- [Tailwind CSS](https://tailwindcss.com)
-- [tRPC](https://trpc.io)
-
-### Learn More
-
-To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:
-
-- [Documentation](https://create.t3.gg/)
-- [Learn the T3 Stack](https://create.t3.gg/en/faq#what-learning-resources-are-currently-available) — Check out these awesome tutorials
-
-You can check out the [create-t3-app GitHub repository](https://github.com/t3-oss/create-t3-app) — your feedback and contributions are welcome!
-
-### How do I deploy this?
-
-Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
+```
