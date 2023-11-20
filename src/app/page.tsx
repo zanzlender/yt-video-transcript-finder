@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import SearchSubtitles from "./_components/GetSubtitles";
 import { api } from "~/trpc/react";
+import PlyrVideoPlayer from "./_components/VideoPlayer";
 
 async function getData() {
   const transcriptUrl = await GetYoutubeTranscriptFromURL(

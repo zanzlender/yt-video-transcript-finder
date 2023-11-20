@@ -6,6 +6,7 @@ import { api } from "~/trpc/react";
 import { useDebounce } from "usehooks-ts";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import Link from "next/link";
+import { PuffLoader } from "react-spinners";
 
 const SearchPage = () => {
   const [search, setSearch] = useState("");
@@ -46,22 +47,21 @@ const SearchPage = () => {
               <input
                 type="text"
                 className="w-full rounded-md bg-slate-700 px-4 py-3 text-white outline-none outline-1 focus:outline-pink-500"
-                placeholder="https://youtube.com?v=..."
+                placeholder="Type anything you want"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
               />
-              <button
-                disabled={false}
-                type="button"
-                className="inline-block whitespace-nowrap rounded bg-pink-600 px-12 py-3 text-sm font-medium text-white transition hover:bg-pink-700 focus:outline-none focus:ring focus:ring-yellow-400 disabled:pointer-events-none disabled:grayscale"
-              >
-                Get transcript
-              </button>
             </div>
           </div>
         </section>
 
         <section className="flex flex-col gap-4" ref={parentRef}>
+          {searchMutation.isLoading && (
+            <div className="my-20">
+              <PuffLoader size={120} color="white" className="mx-auto" />
+            </div>
+          )}
+
           {searchMutation.isSuccess &&
             searchMutation.data.hits.map((item, idx) => {
               return (

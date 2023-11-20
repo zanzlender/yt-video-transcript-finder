@@ -4,9 +4,11 @@ import { Inter } from "next/font/google";
 import { cookies } from "next/headers";
 import PlausibleProvider from "next-plausible";
 import Script from "next/script";
+import ToasterWrapper from "./_components/ToasterWrapper";
 
 import { TRPCReactProvider } from "~/trpc/react";
 import Link from "next/link";
+import { Suspense } from "react";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -36,6 +38,10 @@ export default function RootLayout({
       <body
         className={`relative font-sans ${inter.variable} h-fit min-h-screen bg-gradient-to-b from-[#0f0024] to-[#15162c] bg-repeat`}
       >
+        <Suspense>
+          <ToasterWrapper />
+        </Suspense>
+
         <Header />
 
         <TRPCReactProvider cookies={cookies().toString()}>

@@ -61,7 +61,7 @@ export async function GetYoutubeVideoInfoFromURL(
     // Get video ID
     // if it's a normal yt video
     if (url.includes("watch?v=")) {
-      dataObj.video_id = url.split("watch?v=")[1] ?? "";
+      dataObj.video_id = url.split("watch?v=")[1]?.split("&")[0] ?? "";
     }
     // if it's a short
     else {

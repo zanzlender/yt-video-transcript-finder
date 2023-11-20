@@ -5,11 +5,7 @@ import {
   GetYoutubeVideoInfoFromURL,
 } from "~/lib/youtube";
 import { TRPCError } from "@trpc/server";
-import {
-  ParseXML,
-  type TranscriptXMLFormat,
-  DecodeHtmlEntity,
-} from "~/lib/xmlParser";
+import { ParseXML } from "~/lib/xmlParser";
 
 import { MeiliSearch } from "meilisearch";
 import { secondsToHms } from "~/lib/timeParser";
