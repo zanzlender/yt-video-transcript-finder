@@ -81,8 +81,8 @@ const SearchPage = () => {
                   <div className="w-full">
                     <div className="flex justify-between">
                       <div>
-                        <p className="text-black">{item["title"]}</p>
-                        <p className="mb-4 text-black">{item["id"]}</p>
+                        <p className="text-black">{item.title}</p>
+                        <p className="mb-4 text-black">{item.id}</p>
                       </div>
                       <Link href={`/transcripts/${idx}`}>
                         <button className="rounded bg-teal-700 px-4 py-2 text-sm text-white hover:bg-teal-800">
@@ -95,7 +95,7 @@ const SearchPage = () => {
                       <Link
                         href={`/transcripts/${idx}?start=${123}&duration=${123}&lineId=${123}`}
                       >
-                        <p className="text-black">{item["overview"]}</p>
+                        <p className="text-black">{item.overview}</p>
                       </Link>
                     </div>
                   </div>
