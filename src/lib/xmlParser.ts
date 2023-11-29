@@ -18,24 +18,17 @@ type TranscriptXMLFormat2 = {
   [key: string]: Record<string, unknown>;
 };
 
-const ZodTranscriptXMLFormat = z.union([
-  z.record(z.string(), z.any()),
-  z.object({
-    transcript: z.object({
-      text: z.array(
-        z.object({
-          text: z.array(
-            z.object({
-              "#text": z.string(),
-              start: z.string(),
-              dur: z.string(),
-            }),
-          ),
-        }),
-      ),
+export const ZodTranscriptXMLFormat = z.object({
+  id: z.number(),
+  text: z.array(
+    z.object({
+      "#text": z.string(),
+      start: z.string(),
+      formatedStart: z.string(),
+      dur: z.string(),
     }),
-  }),
-]);
+  ),
+});
 
 const test = `
 <?xml version="1.0" encoding="utf-8" ?>
@@ -53,7 +46,7 @@ export type TranscriptXMLFormat = z.infer<typeof ZodTranscriptXMLFormat>;
 const parser = new XMLParser(config);
 
 export async function ParseXML(xml: string) {
-  const data = parser.parse(xml) as TranscriptXMLFormat2;
+  const data = parser.parse(xml) as TranscriptXMLFormat;
 
   const dataString = JSON.stringify(data);
   const cleanedData = DecodeHtmlEntity(dataString);
@@ -61,7 +54,19 @@ export async function ParseXML(xml: string) {
     cleanedData,
   )) as TranscriptXMLFormat2;
 
-  return cleanedDataObj;
+  const cleanedDataObj2: TranscriptXMLFormat2 = {
+    transcript: {
+      text: cleanedDataObj.transcript.text.map((x) => {
+        return {
+          "#text": x["#text"]?.toString() ?? "",
+          dur: x.dur ?? 0,
+          start: x.start ?? 0,
+        };
+      }),
+    },
+  };
+
+  return cleanedDataObj2;
   /* console.log(data["transcript"]["text"][0]);
 
   const checkTypeResult = ZodTranscriptXMLFormat.safeParse(data);

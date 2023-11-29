@@ -10,8 +10,9 @@ import { PuffLoader } from "react-spinners";
 
 const SearchPage = () => {
   const [search, setSearch] = useState("");
-  const searchMutation = api.post.search.useMutation();
+  const searchMutation = api.transcript.search.useMutation();
   const debouncedSearch = useDebounce(search, 500);
+  const transcriptListRef = useRef<HTMLDivElement>(null);
 
   const [parentRef] = useAutoAnimate({
     disrespectUserMotionPreference: false,
@@ -24,8 +25,24 @@ const SearchPage = () => {
       searchMutation.mutate({ search: debouncedSearch });
     };
 
-    handleSearch();
+    if (debouncedSearch.length > 3) handleSearch();
+
+    // we cannot include the mutation object here because it changes on each render
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedSearch]);
+
+  console.log(searchMutation.data?.hits);
+
+  /* const handleSetTime = async (time: number) => {
+    if (videoFrameRef.current?.plyr) {
+      videoFrameRef.current.plyr.currentTime = Math.round(time);
+
+      if (!videoFrameRef.current.plyr.playing) {
+        videoFrameRef.current.plyr.muted = false;
+        await videoFrameRef.current.plyr.play();
+      }
+    }
+  }; */
 
   return (
     <>
@@ -55,6 +72,15 @@ const SearchPage = () => {
           </div>
         </section>
 
+        {searchMutation.isIdle && (
+          <div className="mx-auto flex justify-center">
+            <p className="text-center font-bold text-white">
+              Start typing anything to search your transcripts (more than 3
+              letters)
+            </p>
+          </div>
+        )}
+
         <section className="flex flex-col gap-4" ref={parentRef}>
           {searchMutation.isLoading && (
             <div className="my-20">
@@ -81,22 +107,50 @@ const SearchPage = () => {
                   <div className="w-full">
                     <div className="flex justify-between">
                       <div>
-                        <p className="text-black">{item.title}</p>
-                        <p className="mb-4 text-black">{item.id}</p>
+                        <p className="text-black">{item.video.title}</p>
+                        <p className="mb-4 text-black">
+                          {item.video.author_name}
+                        </p>
                       </div>
-                      <Link href={`/transcripts/${idx}`}>
+                      <Link href={`/transcripts/${item.id}`}>
                         <button className="rounded bg-teal-700 px-4 py-2 text-sm text-white hover:bg-teal-800">
                           Open
                         </button>
                       </Link>
                     </div>
 
-                    <div className="flex flex-col gap-2">
-                      <Link
-                        href={`/transcripts/${idx}?start=${123}&duration=${123}&lineId=${123}`}
+                    <div className="w-full text-left">
+                      <div className="mb-4 rounded bg-green-700 px-3 py-2">
+                        <p className="text-white">
+                          <span className="font-semibold text-white">
+                            Hint:
+                          </span>{" "}
+                          Click on any line to seek that line in the video
+                        </p>
+                      </div>
+
+                      <div
+                        ref={transcriptListRef}
+                        className="max-h-[300px] w-full overflow-auto"
                       >
-                        <p className="text-black">{item.overview}</p>
-                      </Link>
+                        {item._formatted?.transcript?.text?.map((text, idx) => {
+                          return (
+                            <p
+                              key={`transcript-line-${idx}`}
+                              id={`transcript-line-${idx}`}
+                              className={`text-black underline-offset-2 hover:cursor-pointer hover:underline`}
+                              //onClick={() => handleSetTime(Number(text.start))}
+                            >
+                              {text.formatedStart} -{" "}
+                              <span
+                                dangerouslySetInnerHTML={{
+                                  __html: text["#text"],
+                                }}
+                              ></span>
+                            </p>
+                          );
+                        })}
+                      </div>
                     </div>
                   </div>
                 </div>

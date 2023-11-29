@@ -1,3 +1,4 @@
+import { z } from "zod";
 import { ExtractYoutubeTrancriptLink } from "./urlParser";
 
 type YoutubeTranscriptLinkExtractionResponse =
@@ -27,23 +28,25 @@ export async function GetYoutubeTranscriptFromURL(
   }
 }
 
-type VideoInformation = {
-  title: string;
-  author_name: string;
-  author_url: string;
-  type: string;
-  height: number;
-  width: number;
-  version: string;
-  provider_name: string;
-  provider_url: string;
-  thumbnail_height: number;
-  thumbnail_width: number;
-  thumbnail_url: string;
-  html: string;
-  url: string;
-  video_id: string;
-};
+export const ZodVideoInformation = z.object({
+  title: z.string(),
+  author_name: z.string(),
+  author_url: z.string(),
+  type: z.string(),
+  height: z.number(),
+  width: z.number(),
+  version: z.string(),
+  provider_name: z.string(),
+  provider_url: z.string(),
+  thumbnail_height: z.number(),
+  thumbnail_width: z.number(),
+  thumbnail_url: z.string(),
+  html: z.string(),
+  url: z.string(),
+  video_id: z.string(),
+});
+
+export type VideoInformation = z.infer<typeof ZodVideoInformation>;
 
 export async function GetYoutubeVideoInfoFromURL(
   url: string,

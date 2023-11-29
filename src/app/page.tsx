@@ -1,10 +1,4 @@
-import Link from "next/link";
-import { ZodError } from "zod";
-import { CreatePost } from "~/app/_components/create-post";
-import { ParseXML } from "~/lib/xmlParser";
-import { GetYoutubeTranscriptFromURL } from "~/lib/youtube";
 import FeatureCard from "./_components/FeatureCard";
-import InputSubtitles from "./_components/InputSubtitles";
 import {
   AlertTriangle as AlertTriangleIcon,
   Search as SeachIcon,
@@ -13,28 +7,7 @@ import {
   Download as DownloadIcon,
 } from "lucide-react";
 import SearchSubtitles from "./_components/GetSubtitles";
-import { api } from "~/trpc/react";
-import PlyrVideoPlayer from "./_components/VideoPlayer";
-
-async function getData() {
-  const transcriptUrl = await GetYoutubeTranscriptFromURL(
-    "https://www.youtube.com/watch?v=hhbHMY0rvv8",
-  );
-
-  console.log(transcriptUrl);
-
-  const res = await fetch(transcriptUrl as string);
-
-  const data = await ParseXML(await res.text());
-
-  if (data instanceof ZodError) {
-    console.log("ERROR", data.errors[0]);
-  } else {
-    console.log("ALL GOOD", data.transcript.text[0]);
-  }
-
-  return transcriptUrl;
-}
+import { Suspense } from "react";
 
 export default function Home() {
   // const data = await getData();
@@ -56,7 +29,9 @@ export default function Home() {
           </div> */}
 
         <section id="searchSubtitles" className="w-full">
-          <SearchSubtitles />
+          <Suspense>
+            <SearchSubtitles />
+          </Suspense>
         </section>
 
         <section id="info" className="text-white">
