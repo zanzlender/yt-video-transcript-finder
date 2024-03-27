@@ -31,6 +31,15 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
 
+    - name: Create .env file
+      run: |
+        echo "DATABASE_URL=${{ secrets.DATABASE_URL }} 
+        NEXTAUTH_SECRET=${{ secrets.NEXTAUTH_SECRET }} 
+        NEXTAUTH_URL=${{ secrets.NEXTAUTH_URL }} 
+        GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }} 
+        GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }} 
+        YT_API_KEY=${{ secrets.YT_API_KEY }}" > .env
+
     - name: Extract metadata (tags, labels)
       id: meta
       uses: docker/metadata-action@v5.5.1
