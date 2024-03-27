@@ -22,6 +22,7 @@ RUN --mount=type=cache,id=pnpm,target=/root/.local/share/pnpm/store pnpm fetch -
 RUN --mount=type=cache,id=pnpm,target=/root/.local/share/pnpm/store pnpm install --frozen-lockfile
 COPY . .
 RUN ls -la
+RUN cat .env
 RUN pnpm build
  
 # Production image, copy all the files and run next
