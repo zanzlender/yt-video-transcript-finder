@@ -33,14 +33,16 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Create .env file
-      run: |
-        echo "DATABASE_URL=${{ secrets.DATABASE_URL }} 
-        NEXTAUTH_SECRET=${{ secrets.NEXTAUTH_SECRET }} 
-        NEXTAUTH_URL=${{ secrets.NEXTAUTH_URL }} 
-        GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }} 
-        GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }} 
-        YT_API_KEY=${{ secrets.YT_API_KEY }}" > .env
-
+      uses: SpicyPizza/create-envfile@v2.0.3
+      with:
+        file_name: .env
+        envkey_DATABASE_URL: ${{ secrets.DATABASE_URL }} 
+        envkey_NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }} 
+        envkey_NEXTAUTH_URL: ${{ secrets.NEXTAUTH_URL }} 
+        envkey_GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }} 
+        envkey_GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }} 
+        envkey_YT_API_KEY: ${{ secrets.YT_API_KEY }}
+          
     - name: Extract metadata (tags, labels)
       id: meta
       uses: docker/metadata-action@v5.5.1
