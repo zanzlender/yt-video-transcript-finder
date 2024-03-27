@@ -18,6 +18,9 @@ jobs:
       packages: write
 
     steps:
+    - name: echo
+      run: echo ${{ github.GITHUB_TOKEN }}
+      
     - name: Checkout repository
       uses: actions/checkout@v3
 
