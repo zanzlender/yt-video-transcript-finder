@@ -1,3 +1,4 @@
+
 FROM node:20 AS base
 
 # Install dependencies only when needed
@@ -19,6 +20,7 @@ COPY package.json pnpm-lock.yaml ./
 RUN --mount=type=cache,id=pnpm,target=/root/.local/share/pnpm/store pnpm fetch --frozen-lockfile
 RUN --mount=type=cache,id=pnpm,target=/root/.local/share/pnpm/store pnpm install --frozen-lockfile
 COPY . .
+RUN ls -la
 RUN pnpm build
  
 # Production image, copy all the files and run next
