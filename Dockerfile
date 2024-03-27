@@ -10,7 +10,6 @@ WORKDIR /app
 COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
 RUN --mount=type=cache,id=pnpm,target=/root/.local/share/pnpm/store pnpm fetch --frozen-lockfile
 RUN --mount=type=cache,id=pnpm,target=/root/.local/share/pnpm/store pnpm install --frozen-lockfile --prod
-RUN ls -la
 
 # Rebuild the source code only when needed
 FROM base AS builder
@@ -21,8 +20,7 @@ COPY package.json pnpm-lock.yaml ./
 RUN --mount=type=cache,id=pnpm,target=/root/.local/share/pnpm/store pnpm fetch --frozen-lockfile
 RUN --mount=type=cache,id=pnpm,target=/root/.local/share/pnpm/store pnpm install --frozen-lockfile
 COPY . .
-RUN ls -la
-RUN cat .env
+RUN npx prisma generate
 RUN pnpm build
  
 # Production image, copy all the files and run next
