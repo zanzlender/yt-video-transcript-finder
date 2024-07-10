@@ -176,7 +176,7 @@ const GetSubtitles = () => {
 
         <div ref={parentRef}>
           {getTranscriptMutation.isSuccess && (
-            <div className="flex max-h-[1000px] flex-col gap-6 overflow-y-auto rounded-md border border-slate-600 bg-[#0f0024] p-2 py-4">
+            <div className="flex max-h-[1000px] flex-col flex-wrap gap-6 overflow-y-auto rounded-md border border-slate-600 bg-[#0f0024] p-2 py-4">
               <div className="relative flex w-full items-center justify-center gap-8">
                 <button
                   onClick={handleDownloadTranscript}
