@@ -62,6 +62,21 @@ const GetSubtitles = () => {
     saveAs(saveFile);
   };
 
+  const handleDownloadTranscriptPlainText = () => {
+    if (!getTranscriptMutation.isSuccess) return;
+
+    let text = "";
+
+    getTranscriptMutation.data.transcript.text.forEach((val) => {
+      text += val["#text"] + "\n";
+    });
+
+    const saveFile = new File([text], "transcript.txt", {
+      type: "text/plain;charset=utf-8",
+    });
+    saveAs(saveFile);
+  };
+
   const handleSaveTranscript = () => {
     if (saveMutation.isSuccess) return;
 
@@ -169,6 +184,14 @@ const GetSubtitles = () => {
                   className="inline-block whitespace-nowrap rounded bg-pink-600 px-12 py-3 text-sm font-medium text-white transition hover:bg-pink-700 focus:outline-none focus:ring focus:ring-yellow-400 disabled:pointer-events-none disabled:grayscale"
                 >
                   Download transcript
+                </button>
+
+                <button
+                  onClick={handleDownloadTranscriptPlainText}
+                  type="button"
+                  className="inline-block whitespace-nowrap rounded bg-pink-600 px-12 py-3 text-sm font-medium text-white transition hover:bg-pink-700 focus:outline-none focus:ring focus:ring-yellow-400 disabled:pointer-events-none disabled:grayscale"
+                >
+                  Download transcript plaintext
                 </button>
 
                 <button
