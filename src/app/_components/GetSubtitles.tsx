@@ -8,6 +8,7 @@ import { useAutoAnimate } from "@formkit/auto-animate/react";
 import PlyrVideoPlayer from "./VideoPlayer";
 import { type APITypes } from "plyr-react";
 import { toast } from "react-toastify";
+import CopyToClipboard from "copy-to-clipboard";
 
 const GetSubtitles = () => {
   const [urlInput, setUrlInput] = useState("");
@@ -16,18 +17,31 @@ const GetSubtitles = () => {
   const transcriptListRef = useRef<HTMLDivElement>(null);
   const [errorMessage, setErrorMessage] = useState(false);
 
-  const getTranscriptMutation = api.post.getTranscriptFromUrl.useMutation({
+  const getTranscriptMutation = api.transcript.getTranscriptFromUrl.useMutation(
+    {
+      onError: (err) => {
+        console.log("ERROR: ", err.message);
+        setErrorMessage(true);
+        toast.error("Could not download transcript");
+      },
+      onSuccess: (data) => {
+        console.log(data);
+        toast.success("Script downloaded!");
+      },
+      onMutate: () => {
+        setErrorMessage(false);
+        saveMutation.reset();
+      },
+    },
+  );
+  const saveMutation = api.transcript.saveTranscript.useMutation({
     onError: (err) => {
       console.log("ERROR: ", err.message);
-      setErrorMessage(true);
-      toast.error("Could not download transcript");
+      toast.error("Could not save transcript");
     },
     onSuccess: (data) => {
       console.log(data);
-      toast.success("Script downloaded!");
-    },
-    onMutate: () => {
-      setErrorMessage(false);
+      toast.success("Transcript saved!");
     },
   });
 
@@ -48,10 +62,29 @@ const GetSubtitles = () => {
     saveAs(saveFile);
   };
 
-  // TODO handle saving to meili
-  const handleSaveSubtitle = () => {
-    console.log("SAVING");
-    toast.error("Hello");
+  const handleSaveTranscript = () => {
+    if (saveMutation.isSuccess) return;
+
+    if (
+      getTranscriptMutation.data?.transcript &&
+      getTranscriptMutation.data.video
+    ) {
+      saveMutation.mutate({
+        transcript: { id: 1, ...getTranscriptMutation.data.transcript },
+        video: getTranscriptMutation.data.video,
+      });
+    }
+  };
+
+  const handleCopyToClipboard = () => {
+    const copyString =
+      getTranscriptMutation.data?.transcript.text.reduce((prev, current) => {
+        return (prev +=
+          current.formatedStart + " - " + current["#text"] + "\n");
+      }, "") ?? "";
+
+    CopyToClipboard(copyString);
+    toast.success("Copied to clipboard!");
   };
 
   const handleSetTime = async (time: number) => {
@@ -129,7 +162,7 @@ const GetSubtitles = () => {
         <div ref={parentRef}>
           {getTranscriptMutation.isSuccess && (
             <div className="flex max-h-[1000px] flex-col gap-6 overflow-y-auto rounded-md border border-slate-600 bg-[#0f0024] p-2 py-4">
-              <div className="flex w-full items-center justify-center gap-8">
+              <div className="relative flex w-full items-center justify-center gap-8">
                 <button
                   onClick={handleDownloadTranscript}
                   type="button"
@@ -139,11 +172,20 @@ const GetSubtitles = () => {
                 </button>
 
                 <button
-                  onClick={handleSaveSubtitle}
+                  onClick={handleSaveTranscript}
                   type="button"
+                  disabled={saveMutation.isSuccess || saveMutation.isLoading}
                   className="inline-block whitespace-nowrap rounded bg-pink-600 px-12 py-3 text-sm font-medium text-white transition hover:bg-pink-700 focus:outline-none focus:ring focus:ring-yellow-400 disabled:pointer-events-none disabled:grayscale"
                 >
                   Save transcript
+                </button>
+
+                <button
+                  onClick={handleCopyToClipboard}
+                  type="button"
+                  className="inline-block h-full whitespace-nowrap rounded bg-pink-600 px-12 py-3 text-sm font-medium text-white transition hover:bg-pink-700 focus:outline-none focus:ring focus:ring-yellow-400 disabled:pointer-events-none disabled:grayscale"
+                >
+                  Copy
                 </button>
               </div>
 
@@ -160,7 +202,6 @@ const GetSubtitles = () => {
                           provider: "youtube",
                         },
                       ],
-                      poster: getTranscriptMutation.data.video.thumbnail_url,
                     }}
                     options={{
                       controls: [
@@ -218,6 +259,7 @@ const GetSubtitles = () => {
               </div>
             </div>
           )}
+          S
         </div>
       </div>
     </>
